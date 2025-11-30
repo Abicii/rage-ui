@@ -70,20 +70,21 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
         
         {/* Holographic Filter Bar */}
         <div className="sticky top-4 z-40 mb-12">
-            <div className="glass-panel p-2 rounded-xl flex gap-3 overflow-x-auto no-scrollbar border border-white/10 shadow-[0_0_20px_rgba(0,0,0,0.5)] transform-gpu">
+            <div className="glass-panel p-2 rounded-xl grid grid-cols-2 sm:grid-cols-4 gap-2 border border-white/10 shadow-[0_0_20px_rgba(0,0,0,0.5)] transform-gpu">
                 {filters.map(filter => (
-                    <button
-                    key={filter}
-                    onClick={() => setActiveFilter(filter)}
-                    className={`relative px-6 py-3 rounded-lg text-xs font-bold font-mono uppercase tracking-wider transition-all whitespace-nowrap overflow-hidden group ${
-                        activeFilter === filter 
-                        ? 'text-black bg-neon-cyan shadow-[0_0_15px_rgba(0,243,255,0.4)]' 
-                        : 'text-gray-400 hover:text-white hover:bg-white/5'
-                    }`}
-                    >
-                    <span className="relative z-10">{filter}</span>
-                    {activeFilter === filter && <div className="absolute inset-0 bg-white/20 mix-blend-overlay" />}
-                    </button>
+                                        <button
+                                            key={filter}
+                                            onClick={() => setActiveFilter(filter)}
+                                            className={`relative px-3 py-2 rounded-lg text-[11px] font-bold font-mono uppercase tracking-wider transition-all whitespace-nowrap overflow-hidden group ${
+                                                activeFilter === filter 
+                                                ? 'text-black bg-neon-cyan shadow-[0_0_10px_rgba(0,243,255,0.3)]' 
+                                                : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                            }`}
+                                            style={{ minWidth: '70px' }}
+                                        >
+                                            <span className="relative z-10">{filter}</span>
+                                            {activeFilter === filter && <div className="absolute inset-0 bg-white/20 mix-blend-overlay" />}
+                                        </button>
                 ))}
             </div>
         </div>

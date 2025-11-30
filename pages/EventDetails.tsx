@@ -17,11 +17,11 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onNavigate }) => {
   const yBg = useTransform(scrollY, [0, 500], [0, 200]);
 
     React.useEffect(() => {
-        // Hide navbar when EventDetails is mounted
-        const navbar = document.getElementById('navbar');
-        if (navbar) navbar.style.display = 'none';
+        // Hide mobile nav bar when EventDetails is mounted
+        const mobileNav = document.querySelector('nav.fixed.bottom-8');
+        if (mobileNav) mobileNav.style.display = 'none';
         return () => {
-            if (navbar) navbar.style.display = '';
+            if (mobileNav) mobileNav.style.display = '';
         };
     }, []);
 
