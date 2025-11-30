@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
-import { MapPin, Calendar, ArrowRight, Zap } from 'lucide-react';
+import { MapPin, Calendar, ArrowRight, Filter, Zap } from 'lucide-react';
 import { EVENTS } from '../constants';
-import { AppRoute } from '../types';
+import { AppRoute, Event } from '../types';
 
 interface HomeProps {
   onNavigate: (route: AppRoute, eventId?: string) => void;
@@ -25,7 +25,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       {/* Cyber Hero Section */}
       <motion.div 
         style={{ y: yHero, opacity: opacityHero }}
-        className="relative h-[85vh] w-full flex flex-col items-center justify-center overflow-hidden will-change-transform"
+        className="relative h-[85vh] w-full flex flex-col items-center justify-center overflow-hidden"
       >
         <div className="absolute inset-0 z-0">
             {/* Video Background Mock */}
@@ -70,7 +70,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
         
         {/* Holographic Filter Bar */}
         <div className="sticky top-4 z-40 mb-12">
-            <div className="glass-panel p-2 rounded-xl flex gap-3 overflow-x-auto no-scrollbar border border-white/10 shadow-[0_0_20px_rgba(0,0,0,0.5)] transform-gpu">
+            <div className="glass-panel p-2 rounded-xl flex gap-3 overflow-x-auto no-scrollbar border border-white/10 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
                 {filters.map(filter => (
                     <button
                     key={filter}
@@ -98,10 +98,10 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
             <TiltCard>
                 <div 
                 onClick={() => onNavigate(AppRoute.EVENT_DETAILS, EVENTS[0].id)}
-                className="relative h-[500px] w-full cyber-border bg-[#111] overflow-hidden cursor-pointer group transform-gpu"
+                className="relative h-[500px] w-full cyber-border bg-[#111] overflow-hidden cursor-pointer group"
                 >
                     <div className="absolute inset-0 z-0">
-                        <img src={EVENTS[0].image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter contrast-125 brightness-75 group-hover:brightness-100 will-change-transform" alt="" />
+                        <img src={EVENTS[0].image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter contrast-125 brightness-75 group-hover:brightness-100" alt="" />
                     </div>
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90" />
                     
@@ -137,14 +137,14 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
            {filteredEvents.map((event, i) => (
              <motion.div 
                 key={event.id}
-                initial={{ opacity: 0, rotateX: -10, y: 30 }}
+                initial={{ opacity: 0, rotateX: -20, y: 50 }}
                 whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
-                viewport={{ margin: "-50px", amount: 0.2, once: true }}
-                transition={{ duration: 0.5, delay: i * 0.05 }}
+                viewport={{ margin: "-50px" }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
                 onClick={() => onNavigate(AppRoute.EVENT_DETAILS, event.id)}
              >
                 <TiltCard className="h-full">
-                    <div className="h-full bg-white/5 backdrop-blur-md border border-white/10 p-1 flex flex-col group hover:border-neon-purple/50 transition-colors relative transform-gpu">
+                    <div className="h-full bg-white/5 backdrop-blur-md border border-white/10 p-1 flex flex-col group hover:border-neon-purple/50 transition-colors relative">
                         {/* Corner Accents */}
                         <div className="absolute top-0 left-0 w-2 h-2 border-l border-t border-white/50" />
                         <div className="absolute top-0 right-0 w-2 h-2 border-r border-t border-white/50" />
@@ -152,7 +152,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                         <div className="absolute bottom-0 right-0 w-2 h-2 border-r border-b border-white/50" />
 
                         <div className="h-48 relative overflow-hidden mb-4">
-                            <img src={event.image} alt={event.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 filter grayscale group-hover:grayscale-0 will-change-transform" />
+                            <img src={event.image} alt={event.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 filter grayscale group-hover:grayscale-0" />
                             <div className="absolute top-2 right-2 px-2 py-1 bg-black/80 backdrop-blur font-mono text-neon-cyan text-xs font-bold border border-neon-cyan/30">
                                 ₹{event.price}
                             </div>
@@ -187,28 +187,18 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
   );
 };
 
-// Optimized 3D Tilt Component logic
+// 3D Tilt Component logic
 const TiltCard = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => {
     const x = useMotionValue(0);
     const y = useMotionValue(0);
-    const rectRef = useRef<DOMRect | null>(null);
 
-    // Reduced stiffness for smoother feel
-    const mouseX = useSpring(x, { stiffness: 150, damping: 20 });
-    const mouseY = useSpring(y, { stiffness: 150, damping: 20 });
+    const mouseX = useSpring(x, { stiffness: 500, damping: 100 });
+    const mouseY = useSpring(y, { stiffness: 500, damping: 100 });
 
-    const handleMouseEnter = (e: React.MouseEvent) => {
-        // Calculate ONLY on enter, not on every move
-        rectRef.current = e.currentTarget.getBoundingClientRect();
-    };
-
-    function handleMouseMove(e: React.MouseEvent) {
-        if (!rectRef.current) return;
-        
-        const { left, top, width, height } = rectRef.current;
-        const xPct = (e.clientX - left) / width - 0.5;
-        const yPct = (e.clientY - top) / height - 0.5;
-        
+    function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
+        const { left, top, width, height } = currentTarget.getBoundingClientRect();
+        const xPct = (clientX - left) / width - 0.5;
+        const yPct = (clientY - top) / height - 0.5;
         x.set(xPct);
         y.set(yPct);
     }
@@ -216,11 +206,10 @@ const TiltCard = ({ children, className = "" }: { children: React.ReactNode, cla
     function handleMouseLeave() {
         x.set(0);
         y.set(0);
-        rectRef.current = null;
     }
 
-    const rotateX = useTransform(mouseY, [-0.5, 0.5], [8, -8]);
-    const rotateY = useTransform(mouseX, [-0.5, 0.5], [-8, 8]);
+    const rotateX = useTransform(mouseY, [-0.5, 0.5], [10, -10]);
+    const rotateY = useTransform(mouseX, [-0.5, 0.5], [-10, 10]);
 
     return (
         <motion.div
@@ -229,7 +218,6 @@ const TiltCard = ({ children, className = "" }: { children: React.ReactNode, cla
                 rotateY,
                 transformStyle: "preserve-3d",
             }}
-            onMouseEnter={handleMouseEnter}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
             className={`relative ${className}`}
