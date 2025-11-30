@@ -16,8 +16,17 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onNavigate }) => {
   const { scrollY } = useScroll();
   const yBg = useTransform(scrollY, [0, 500], [0, 200]);
 
-  return (
-    <div className="min-h-screen bg-black pb-32 overflow-x-hidden">
+    React.useEffect(() => {
+        // Hide navbar when EventDetails is mounted
+        const navbar = document.getElementById('navbar');
+        if (navbar) navbar.style.display = 'none';
+        return () => {
+            if (navbar) navbar.style.display = '';
+        };
+    }, []);
+
+    return (
+        <div className="min-h-screen bg-black pb-32 overflow-x-hidden">
        <BookingModal 
         event={event} 
         isOpen={showBooking} 
@@ -100,9 +109,13 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onNavigate }) => {
 
             {/* Cyber Sidebar */}
             <div className="fixed md:sticky bottom-4 left-4 right-4 md:left-auto md:right-auto md:top-24 md:w-96 md:h-fit z-50 md:z-10">
-                <div className="bg-[#111]/90 backdrop-blur-xl border border-neon-cyan/30 p-1 shadow-[0_0_30px_rgba(0,0,0,0.5)]"
-                     style={{ clipPath: 'polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px)' }}
-                >
+                                <div
+                                    className="bg-[#111]/90 backdrop-blur-xl border border-neon-cyan/30 p-1 shadow-[0_0_30px_rgba(0,0,0,0.5)]"
+                                    style={{
+                                        clipPath: 'polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px)',
+                                        marginBottom: 'env(safe-area-inset-bottom)',
+                                    }}
+                                >
                     <div className="border border-white/5 p-6 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] bg-cover">
                         <div className="flex justify-between items-end mb-6 border-b border-dashed border-white/20 pb-4">
                             <div>
@@ -120,6 +133,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onNavigate }) => {
                         <button 
                             onClick={() => setShowBooking(true)}
                             className="group relative w-full overflow-hidden bg-white text-black font-display font-black text-xl py-4 uppercase tracking-widest hover:text-white transition-colors"
+                            style={{ position: 'relative', zIndex: 10 }}
                         >
                             <span className="relative z-10">INITIALIZE</span>
                             <div className="absolute inset-0 bg-neon-cyan transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left z-0" />
