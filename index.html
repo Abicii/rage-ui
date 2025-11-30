@@ -29,6 +29,7 @@
               'blob': 'blob 10s infinite',
               'glitch': 'glitch 1s linear infinite',
               'scan': 'scan 4s linear infinite',
+              'spin-slow': 'spin 3s linear infinite',
             },
             keyframes: {
               blob: {
@@ -56,9 +57,15 @@
         background-color: #050505;
         color: white;
         overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .translate-z-0 {
+        transform: translateZ(0);
       }
       
-      /* CRT Scanline Effect */
+      /* CRT Scanline Effect - Optimized */
       .scanlines {
         background: linear-gradient(
           to bottom,
@@ -76,6 +83,7 @@
         z-index: 9999;
         pointer-events: none;
         opacity: 0.15;
+        will-change: opacity;
       }
 
       .glass-panel {
@@ -117,6 +125,7 @@
         left: 0;
         width: 100%;
         height: 100%;
+        will-change: transform, clip;
       }
       .glitch-text::before {
         left: 2px;
@@ -147,11 +156,9 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
   <body>
     <div id="root"></div>
     <div class="scanlines"></div>
-  <script type="module" src="/index.tsx"></script>
-</body>
+  </body>
 </html>
